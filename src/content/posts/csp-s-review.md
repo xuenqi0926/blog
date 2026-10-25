@@ -72,3 +72,15 @@ draft: false
 10. [P1896](https://www.luogu.com.cn/problem/P1896)
 11. [P2704](https://www.luogu.com.cn/problem/P2704)
 12. [P1879](https://www.luogu.com.cn/problem/P1879)
+
+# 线性 DP 与区间 DP
+1. [P1970](https://www.luogu.com.cn/problem/P1970)
+2. [P1439](https://www.luogu.com.cn/problem/P1439)
+3. [P2051](https://www.luogu.com.cn/problem/P2051)
+4. [P1220](https://www.luogu.com.cn/problem/P1220)
+5. [P1040](https://www.luogu.com.cn/problem/P1040)
+6. [P4342](https://www.luogu.com.cn/problem/P4342)
+7. [P3205](https://www.luogu.com.cn/problem/P3205)
+8. [P4170](https://www.luogu.com.cn/problem/P4170)
+9. [P5851](https://www.luogu.com.cn/problem/P5851)
+10. [P5774](https://www.luogu.com.cn/problem/P5774)
