@@ -8,7 +8,8 @@ draft: false
 
 > 说明：本题单是我考前复习各类算法使用的，没有全部写完题目，题目难度在 黄~青 之间。
 
-# 树上差分
+# 一，图论板块
+## 1. 树上差分
 1. [P3128](https://www.luogu.com.cn/problem/P3128)
 2. [P3258](https://www.luogu.com.cn/problem/P3258)
 3. [P2680](https://www.luogu.com.cn/problem/P2680)
@@ -17,7 +18,7 @@ draft: false
 6. [CF191C](https://codeforces.com/problemset/problem/191/C)
 7. [CF1707C](https://codeforces.com/problemset/problem/1707/C)
 
-# Tarjan 
+## 2. Tarjan 
 1. [P4819](https://www.luogu.com.cn/problem/P4819)
 2. [CF894E](https://codeforces.com/problemset/problem/894/E)
 3. [P2656](https://www.luogu.com.cn/problem/P2656)
@@ -26,7 +27,7 @@ draft: false
 6. [P2860](https://www.luogu.com.cn/problem/P2860)
 7. [CF732F](https://codeforces.com/problemset/problem/732/F)
 
-# 最短路+欧拉图+二分图
+## 3. 最短路+欧拉图+二分图
 1. [P4568](https://www.luogu.com.cn/problem/P4568)
 2. [P1629](https://www.luogu.com.cn/problem/P1629)
 3. [CF1473E](https://codeforces.com/problemset/problem/1473/E)
@@ -37,7 +38,7 @@ draft: false
 8. [P11860](https://www.luogu.com.cn/problem/P11860)
 9. [P13271](https://www.luogu.com.cn/problem/P13271)
 
-# 生成树+KRT
+## 4. 生成树+KRT
 1. [P1194](https://www.luogu.com.cn/problem/P1194)
 2. [abc_235_e](https://atcoder.jp/contests/abc235/tasks/abc235_e)
 3. [CF1107F](https://codeforces.com/problemset/problem/1107/F)
@@ -45,7 +46,8 @@ draft: false
 5. [P1967](https://www.luogu.com.cn/problem/P1967)
 6. [P6310](https://www.luogu.com.cn/problem/P6310)
 
-# 树形 DP 与换根 DP
+# 二，DP 板块
+## 1. 树形 DP 与换根 DP
 1. [P2014](https://www.luogu.com.cn/problem/P2014)
 2. [P2015](https://www.luogu.com.cn/problem/P2015)
 3. [P2899](https://www.luogu.com.cn/problem/P2899)
@@ -59,7 +61,7 @@ draft: false
 11. [CF708C](https://codeforces.com/problemset/problem/708/C)
 12. [P2607](https://www.luogu.com.cn/problem/P2607)
 
-# 数位 DP 与状压 DP
+## 2. 数位 DP 与状压 DP
 1. [P13085](https://www.luogu.com.cn/problem/P13085)
 2. [P10959](https://www.luogu.com.cn/problem/P10959)
 3. [P4999](https://www.luogu.com.cn/problem/P4999)
@@ -73,7 +75,7 @@ draft: false
 11. [P2704](https://www.luogu.com.cn/problem/P2704)
 12. [P1879](https://www.luogu.com.cn/problem/P1879)
 
-# 线性 DP 与区间 DP
+## 3. 线性 DP 与区间 DP
 1. [P1970](https://www.luogu.com.cn/problem/P1970)
 2. [P1439](https://www.luogu.com.cn/problem/P1439)
 3. [P2051](https://www.luogu.com.cn/problem/P2051)
