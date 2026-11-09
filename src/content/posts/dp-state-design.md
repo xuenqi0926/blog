@@ -5,7 +5,6 @@ tags: [动态规划, 题单]
 category: 动态规划
 draft: false
 ---
-
 # 一，状态设计原则
 1. **无后效性**：即一旦当前状态决定，后续的状态只需要通过当前的状态就可以正确的转移；
 2. 最优子结构：一个问题的最优解，可以由其子问题的最优解构造出来；
@@ -92,12 +91,9 @@ $$
 
 注意到时间复杂度是 $O(EK^2)$，显然时间复杂度超时。
 我们先把式子拆开：
-$$
-\text{dp}[i][j]=c_i \times j + \min_{p}\{ \text{dp}[i-1][p]+(x_i-x_{i-1}) \times p^2-c_i \times p\}
-$$
 令 
 $$
-f[p]=\text{dp}[i-1][p]+(x_i-x_{i-1}\times p^2 - c_i \times p)
+f[p]=\text{dp}[i-1][p]+((x_i-x_{i-1})\times p^2 - c_i \times p)
 $$
 那么原式即
 $$
@@ -105,14 +101,18 @@ $$
 $$
 又由于 $p$ 有一个限制 $\max(0,j-f_i) \le p \le j$，于是显然可以用单调队列优化 DP。
 ## 7. P10755 Netrpeljivost
-我们首先考虑一个 $O(n^4)$ 的做法。
-我们定义一个递归函数 `solve(l, m)` 表示这个子树的覆盖叶子为 $[l,l+m)$。此时 `dp[i][j]` 表示头为全局 $l+i$，尾为全局 $l+j$ 时，子树的最小代价。
-然后如果 $m=2$，显然 `dp[0][1] = w[l][l+1], dp[1][0] = w[l+1][l]`。
-其余情况考虑进行子树的合并。我们定义 `lh`（左子树的头），`lt`（左子树的尾），`rh`（左子树的头），`rt`（左子树的尾）。我们四层循环枚举这 $4$ 个变量，并分交换和不交换两种情况：
-- 不交换：先枚举 `lh`，`rt`，然后枚举 `lt` 与 `rh` 这里的条件是 `L[lh][lt]` 和 `R[rh][rt]` 都合法，那么贡献很容易计算：`L[lh][lt] + w[l + lt][l + s + rh] + R[rh][rt]`；
-- 交换：开头为 `rh`，结尾为 `lt`，然后枚举 `rt` 与 `lh`，条件一样，然后贡献同理。
-这显然是会超时的，这里我们可以发现对于“不交换”的情况的计算，`rh` 只会出现在后两项，于是不妨先固定 `lt` 与 `rt`，然后枚举 `rh`，储存后两项（`w[l + lt][l + s + rh] + R[rh][rt]`）的最小值，然后 DP 的时候枚举 `lh`，`rt`，`lt` 即可。交换的情况完全同理。
-这个代码的时间复杂度被优化至 $O(n^2)$，证明略。
+首先我们稍加转化，把交换子树转化为递归的交换块。
+我们可以观察出一个关键的性质：我们把最终的排列编号为 $0,1,2,\dots,n-2,n-1$，排列中第 $i-1$ 个位置和第 $i$ 个位置之间的那条邻边，一定跨越某两个块，这两个块的大小为 $h=\text{lowbit}(i)$，可自行画表验证。
+于是我们便可以设计出状态：$\text{dp}[i][j]$ 表示排列的 $0$ 到 $i$ 已经确定，并且第 $i$ 个位置上的人是 $j$ 的时候，前 $i$ 条邻边产生的最小总不和睦度之和。显然有 $\text{dp}[0][j]=0$。
+那么上一个位置可以放置的数字，记为 $k$，需要存在于当前边的相邻块。我们有转移：
+$$
+\text{dp}[i][j]=\min_{k\in S}\{ \text{dp}[i-1][k]+a[j][k] \}
+$$
+下面讲如何求出 $S$。
+首先我们知道，块的大小为 $h=\text{lowbit}(i)$，这些块是按照 $[0,h-1],[h,2h-1],\dots$ 这样划分的，所以自己的块的起点为 $s=j-j \bmod h$（注意这里按照 $j$ 算，因为 $j$ 决定了这个数字旁边是谁，如样例，1 的旁边是 2 而不是 4），其编号为 $\text{id}=s \div h$。 这里由于相邻的块（指同子树）是两两配对的，所以若 $\text{id}$ 为偶数，则目标块的起点为 $s+h$；否则 $\text{id}$ 为奇数，目标块的起点为 $s-h$。
+总时间复杂度 $O(n^2 \log n)$。
+> 为什么是对的？为什么不能从同块中选择？
+> 因为当前我们肯定填的是当前块的第一个位置，其余位置都没有填，于是一定要从别的块中选择。
 ## 8. CF21D Traveling Graph
 对于一个闭合的路径，每个点走的次数一定是偶数。但是原图中有些点的度可能是奇数，这些的经过次数变成偶数就需要重复走的边。我们不妨将这些点两两配对，重复走，那么新的代价就是路径长度，也就是我们要跑最短路，用 Floyd 跑一遍全源最短路。
 然后收集所有的奇数点，跑一个最小权完美匹配即可，用状压 DP。
@@ -282,6 +282,7 @@ struct State { int val, h, id; };
 
 void solve() {
     cin >> n;
+    
     for (int i = 1; i <= n; i++)
     	cin >> d[i];
 
@@ -374,5 +375,266 @@ signed main() {
 	cin >> T;
 	while (T--) solve();
 	return 0;
+}
+```
+## 6. P4544
+```cpp
+#include<bits/stdc++.h>
+#define ll long long
+#define int long long
+#define i128 __int128
+#define INF 1e18
+using namespace std;
+
+const int N = 510;
+const int M = 10010;
+
+int k, e, n, dp[N][M];
+
+struct Shop {
+	int x, f, c;
+	bool operator<(const Shop &other) const {
+		return x < other.x;
+	}
+} a[N];
+
+void solve() {
+    cin >> k >> e >> n;
+    
+    for (int i = 1; i <= n; i++)
+        cin >> a[i].x >> a[i].f >> a[i].c;
+
+    sort(a + 1, a + n + 1);
+
+    memset(dp, 0x3f3f3f3f, sizeof(dp));
+    dp[0][0] = 0;
+
+    for (int i = 1; i <= n; i++) {
+        deque<int> q;
+        for (int j = 0; j <= k; j++) {
+            while (!q.empty() && q.front() < max(0LL, j - a[i].f)) q.pop_front();
+            while (!q.empty() && dp[i - 1][j] + (a[i].x - a[i - 1].x) * j * j - a[i].c * j <= dp[i - 1][q.back()] + (a[i].x - a[i - 1].x) * q.back() * q.back() - a[i].c * q.back())\
+                q.pop_back();
+            q.push_back(j);    
+            dp[i][j] = a[i].c * j + dp[i - 1][q.front()] + (a[i].x - a[i - 1].x) * q.front() * q.front() - a[i].c * q.front();
+        }
+    }
+
+    cout << dp[n][k] + (e - a[n].x) * k * k << "\n";
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int T;
+    // cin >> T;
+    T = 1;
+    while (T--) solve();
+    return 0;
+}
+```
+## 7. P10755
+```cpp
+#include<bits/stdc++.h>
+#define ll long long
+#define int long long
+#define i128 __int128
+#define INF 1e18
+using namespace std;
+
+const int N = 2050;
+
+int n, a[N][N], dp[N][N];
+
+void solve() {
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+    	for (int j = 0; j < n; j++) {
+    		cin >> a[i][j];
+    	}
+    }
+
+    for (int i = 0; i < n; i++) {
+    	for (int j = 0; j < n; j++) {
+    		dp[i][j] = INF;
+    	}
+    }
+
+    for (int i = 0; i < n; i++)
+    	dp[0][i] = 0;
+
+    for (int i = 1; i < n; i++) {
+    	int h = i & (-i);
+    	
+    	for (int j = 0; j < n; j++) {
+    		int s = j - j % h;
+    		int id = s / h;
+    		int bs = ((id & 1) ? (s - h) : (s + h));
+
+    		for (int k = bs; k < bs + h; k++)
+    			dp[i][j] = min(dp[i][j], dp[i - 1][k] + a[j][k]);
+    	}
+    }
+
+    int ans = INF;
+    for (int i = 0; i < n; i++)
+    	ans = min(ans, dp[n - 1][i]);
+
+    cout << ans << "\n";
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int T;
+    // cin >> T;
+    T = 1;
+    while (T--) solve();
+    return 0;
+}
+```
+## 8. CF21D
+```cpp
+#include<bits/stdc++.h>
+#define ll long long
+#define int long long
+#define i128 __int128
+#define INF 1e18
+using namespace std;
+
+const int N = 20;
+
+int n, m, k, deg[N], dis[N][N], dp[1 << N];
+vector<pair<int, int>> g[N];
+
+void solve() {
+    cin >> n >> m;
+
+    for (int i = 1; i <= n; i++) {
+    	for (int j = 1; j <= n; j++) {
+    		if (i == j) continue;
+    		dis[i][j] = INF;
+    	}
+    }
+
+    int sum = 0;
+
+    for (int i = 1; i <= m; i++) {
+    	int u, v, w;
+    	cin >> u >> v >> w;
+    	g[u].push_back({v, w});
+    	g[v].push_back({u, w});
+    	deg[u]++, deg[v]++;
+    	dis[u][v] = min(dis[u][v], w);
+    	dis[v][u] = min(dis[v][u], w);
+    	sum += w;
+    }
+
+    for (int k = 1; k <= n; k++)
+    	for (int i = 1; i <= n; i++)
+    		for (int j = 1; j <= n; j++)
+    			dis[i][j] = min(dis[i][j], dis[i][k] + dis[k][j]);
+
+    // 所有有边的点必须连通
+    if (m > 0) {
+        for (int i = 1; i <= n; i++) {
+            if (deg[i] > 0 && dis[1][i] >= INF / 2) {
+                cout << -1 << "\n";
+                return;
+            }
+        }
+    }
+
+    vector<int> odd;
+    for (int i = 1; i <= n; i++) {
+    	if (deg[i] & 1) {
+    		k++;
+    		odd.push_back(i);
+    	}
+    }
+
+    vector<vector<int>> w(k, vector<int>(k));
+    for (int i = 0; i < k; i++) {
+    	for (int j = 0; j < k; j++) {
+    		w[i][j] = dis[odd[i]][odd[j]];
+    	}
+    }
+
+    // 在 0~k 跑最小完美匹配，匹配 i, j 的代价为 w[i][j]
+    for (int i = 0; i < (1 << k); i++)
+    	dp[i] = INF;
+
+    dp[0] = 0;
+
+    for (int mask = 0; mask < (1 << k); mask++) {
+    	for (int i = 0; i < k; i++) {
+    		if (mask & (1 << i)) continue;
+    		for (int j = 0; j < k; j++) {
+    			if (mask & (1 << j)) continue;
+    			if (i == j) continue;
+
+    			int nmask = mask | (1 << i) | (1 << j);
+    			dp[nmask] = min(dp[nmask], dp[mask] + w[i][j]);
+    		}
+    	}
+    }
+
+    cout << sum + dp[(1 << k) - 1] << "\n";
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int T;
+    // cin >> T;
+    T = 1;
+    while (T--) solve();
+    return 0;
+}
+```
+## 9. P4170
+```cpp
+#include<bits/stdc++.h>
+#define ll long long
+#define int long long
+#define i128 __int128
+#define INF 1e18
+using namespace std;
+
+const int N = 60;
+
+int n, dp[N][N];
+string s;
+
+void solve() {
+    cin >> s;
+    n = s.size();
+    s = " " + s;
+
+    memset(dp, 0x3f3f3f3f, sizeof(dp));
+
+    for (int i = 1; i <= n; i++)
+        dp[i][i] = 1;
+
+    for (int len = 2; len <= n; len++)
+        for (int l = 1, r = len; r <= n; l++, r++) {
+            if (s[l] == s[r])
+                dp[l][r] = min(dp[l + 1][r], dp[l][r - 1]);
+            for (int k = l; k < r; k++)
+                dp[l][r] = min(dp[l][r], dp[l][k] + dp[k + 1][r]);
+        }
+        
+    cout << dp[1][n];    
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int T;
+    // cin >> T;
+    T = 1;
+    while (T--) solve();
+    return 0;
 }
 ```
