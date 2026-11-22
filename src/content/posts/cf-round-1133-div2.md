@@ -405,11 +405,12 @@ void solve() {
 	ans = min(ans, res);
 
 	// y = 1~s
-	int s = sqrt(l);
+	int s = sqrt(l - 1);
 	int pos = 1; // The first positive a[i] - y
 	for (int y = 1; y <= s; y++) {
 		while (pos <= n && a[pos] - y <= 0) pos++;
-		res = pre[pos] - a[n] - (n - pos) * y + max(0LL, a[n] - (l - 1) / y);
+		if (pos > n) res = max(0LL, a[n] - (l - 1) / y);
+		else res = pre[pos] - a[n] - (n - pos) * y + max(0LL, a[n] - (l - 1) / y);
 		ans = min(ans, res);
 	}
 
